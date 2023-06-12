@@ -1,11 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Card, Container, Form, Row} from "react-bootstrap";
 import {NavLink, useLocation} from "react-router-dom";
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts";
+import {login, registration} from "../http/userAPI";
 
 const Auth = () => {
     const location = useLocation()
     const isLogin = location.pathname === LOGIN_ROUTE
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    
+    const click = async () => {
+        if (isLogin) {
+            const response = await login()
+        } else {
+            const response = await registration(email, password)
+            console.log(response)
+        }
+    }
     
     return (
         <Container className={'d-flex justify-content-center align-items-center'}
@@ -18,10 +30,15 @@ const Auth = () => {
                     <Form.Control
                         placeholder={'Enter your email...'}
                         className={'mt-3'}
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                     />
                     <Form.Control
                         placeholder={'Enter your password...'}
                         className={'mt-3'}
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        type={'password'}
                     />
                     <Row className={'d-flex justify-content-between mt-3 pl-3 pr-3'}>
                         {isLogin ?
@@ -35,6 +52,7 @@ const Auth = () => {
                         }
                         <Button
                             variant={"outline-success"}
+                            onClick={() => click()}
                         >
                             {isLogin ? "Log In" : "Register"}
                         </Button>
